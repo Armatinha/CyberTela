@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}</style>
+<title>CyberTela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sites-incriveis.css">
+<style>
+/* Conceito: vitrine escura com cartões lilás. Cada produto herda uma cor de destaque própria (--acc).
+   O elemento memorável é o cartão de produto; o resto fica quieto. Tema único escuro, escolhido de propósito. */
+:root{
+  --bg:#08060F; --bg-2:#0E0A1A; --panel:#150F26; --line:#2A1F47;
+  --lilac:#E6DBFF; --lilac-2:#CDB9FF; --ink:#1A1030;
+  --fg:#F4EFFF; --muted:#A99BCB; --accent:#8B2BE2; --accent-2:#B65CFF;
+  --ok:#3DD68C; --warn:#FFC857; --bad:#FF6B81;
+  --font:'Outfit','Segoe UI',system-ui,-apple-system,sans-serif;
+  --gutter:clamp(16px,4vw,40px);
+  --cookie-h:0px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+
+/* Sites Incríveis — customizações CyberTela */
+.telemetry-badge{display:inline-flex;align-items:center;gap:.6rem;padding:.35rem .95rem;border-radius:999px;background:rgba(139,43,226,.15);border:1px solid rgba(182,92,255,.3);color:var(--lilac);font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.2rem}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:#3DD68C;box-shadow:0 0 10px #3DD68C;animation:pdot 1.6s infinite ease-in-out}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+.sec-badge{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);margin-bottom:.4rem}
+
+.trust-section{padding-block:clamp(20px,4vw,40px)}
+.trust-head{margin-bottom:1.6rem}
+.trust-head h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;margin-bottom:.4rem}
+.trust-head p{color:var(--muted);max-width:55ch}
+.trust-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.trust-item{position:relative;display:flex;gap:1rem;align-items:flex-start;padding:1.2rem;background:linear-gradient(135deg,rgba(21,15,38,.9),rgba(14,10,26,.9));border:1px solid var(--line);border-radius:18px;transition:border-color .2s,transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.trust-item:hover{border-color:var(--accent-2);transform:translateY(-3px);box-shadow:0 12px 30px rgba(139,43,226,.2)}
+.trust-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(139,43,226,.2);color:var(--accent-2);flex:none}
+.trust-icon svg{width:22px;height:22px}
+.trust-item b{display:block;font-size:1.02rem;color:var(--fg);margin-bottom:.25rem}
+.trust-item span{display:block;font-size:.85rem;color:var(--muted);line-height:1.4}
+
+/* Cena Fixa — Movimento-Assinatura (Scan & Unlock) */
+.scene-signature{background:radial-gradient(1000px 600px at 50% 50%,rgba(139,43,226,.15),transparent 75%),#08060F;border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+.scene-signature .fx-palco{padding-inline:var(--gutter)}
+.sig-container{width:100%;max-width:1160px;margin-inline:auto;display:grid;grid-template-columns:1.05fr .95fr;gap:2.5rem;align-items:center}
+.sig-info{display:flex;flex-direction:column;gap:1.4rem}
+.sig-info h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15}
+.sig-info p{color:var(--muted);font-size:1.05rem;max-width:44ch}
+.timeline{display:grid;gap:.8rem;list-style:none;margin:0;padding:0}
+.timeline-item{position:relative;display:flex;gap:1rem;align-items:flex-start;padding:1rem 1.2rem;border-radius:16px;background:rgba(21,15,38,.6);border:1px solid var(--line);transition:all .3s cubic-bezier(0.2, 0.8, 0.2, 1)}
+.timeline-item.active{background:rgba(139,43,226,.22);border-color:var(--accent-2);box-shadow:0 0 25px rgba(182,92,255,.25)}
+.timeline-num{width:32px;height:32px;border-radius:10px;background:var(--line);color:var(--muted);display:grid;place-items:center;font-weight:800;font-size:.9rem;flex:none;transition:background .3s,color .3s}
+.timeline-item.active .timeline-num{background:var(--accent-2);color:#fff}
+.timeline-item b{display:block;font-size:1.02rem;color:var(--fg);margin-bottom:.2rem}
+.timeline-item span{font-size:.88rem;color:var(--muted)}
+
+.terminal-box{background:rgba(14,10,26,.95);border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 40px rgba(139,43,226,.2);overflow:hidden;position:relative}
+.term-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.2rem;background:rgba(21,15,38,.9);border-bottom:1px solid var(--line);font-size:.78rem;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.term-dots{display:flex;gap:6px}
+.term-dots span{width:10px;height:10px;border-radius:50%;display:inline-block}
+.td-red{background:#FF6B81}.td-yellow{background:#FFC857}.td-green{background:#3DD68C}
+.term-body{padding:1.4rem;display:flex;flex-direction:column;gap:1.1rem}
+.scan-area{position:relative;height:170px;border-radius:16px;background:radial-gradient(circle at center,#1b1335,#090712);border:1px dashed var(--line);display:grid;place-items:center;overflow:hidden}
+.scan-laser{position:absolute;left:0;right:0;top:10px;height:3px;background:linear-gradient(90deg,transparent,var(--accent-2),#fff,var(--accent-2),transparent);box-shadow:0 0 14px var(--accent-2),0 0 4px #fff;pointer-events:none;will-change:transform}
+.qr-mock{display:grid;place-items:center;gap:.4rem;color:var(--muted);font-size:.8rem;font-family:ui-monospace,Menlo,monospace}
+.qr-frame{width:86px;height:86px;border:2px solid rgba(182,92,255,.4);border-radius:12px;padding:6px;display:grid;place-items:center;background:rgba(255,255,255,.03)}
+.qr-frame svg{width:100%;height:100%;color:var(--fg)}
+.term-status-badge{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-radius:12px;background:rgba(255,200,87,.1);border:1px solid rgba(255,200,87,.3);color:var(--warn);font-size:.85rem;font-weight:700;font-family:ui-monospace,Menlo,monospace;transition:all .3s}
+.term-status-badge.confirmed{background:rgba(61,214,140,.12);border-color:rgba(61,214,140,.4);color:var(--ok)}
+.term-key-box{padding:.8rem 1rem;background:rgba(8,6,15,.8);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;gap:.3rem}
+.term-key-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.term-key-val{font-family:ui-monospace,Menlo,monospace;font-size:1.05rem;font-weight:800;color:var(--lilac);letter-spacing:.04em;word-break:break-all}
+.term-foot-note{font-size:.78rem;color:var(--muted);text-align:center}
+
+/* Card Final de Fechamento */
+.final-cta{margin-block:2.5rem 3.5rem}
+.final-cta-in{position:relative;background:linear-gradient(135deg,rgba(139,43,226,.28),rgba(21,15,38,.9));border:1px solid rgba(182,92,255,.3);border-radius:28px;padding:clamp(28px,5vw,56px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.final-cta-in::before{content:"";position:absolute;top:-50%;left:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(182,92,255,.3),transparent 70%);pointer-events:none}
+.final-cta h3{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800}
+.final-cta p{color:var(--lilac);font-size:1.05rem;margin-top:.4rem;max-width:48ch}
+.cta-actions{display:flex;flex-wrap:wrap;gap:.8rem}
+
+@media(max-width:880px){
+  .scene-signature .fx-palco{padding-top:calc(72px + env(safe-area-inset-top,0px));padding-bottom:20px;height:100dvh;box-sizing:border-box}
+  .sig-container{display:flex;flex-direction:column;gap:.8rem;width:100%;max-height:calc(100dvh - 90px);justify-content:center}
+  .sig-info{gap:.5rem}
+  .sig-info h2{font-size:1.3rem;line-height:1.2;margin:0}
+  .sig-info p{display:none}
+  .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
+  .timeline-item{padding:.45rem .3rem;flex-direction:column;align-items:center;text-align:center;gap:.25rem}
+  .timeline-num{width:22px;height:22px;font-size:.72rem}
+  .timeline-item b{font-size:.7rem;margin:0;line-height:1.1}
+  .timeline-item span:not(.timeline-num){display:none}
+  .terminal-box{border-radius:16px}
+  .term-head{padding:.45rem .75rem;font-size:.68rem}
+  .term-body{padding:.75rem;gap:.55rem}
+  .scan-area{height:100px}
+  .qr-frame{width:50px;height:50px}
+  .term-status-badge{padding:.45rem .7rem;font-size:.72rem}
+  .term-key-box{padding:.45rem .7rem}
+  .term-key-val{font-size:.82rem}
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 500px at 85% -10%,rgba(139,43,226,.28),transparent 60%),radial-gradient(700px 400px at -10% 30%,rgba(182,92,255,.12),transparent 60%)}
+img,svg{max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input{font:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent-2);outline-offset:2px}
+.wrap{width:100%;max-width:1200px;margin-inline:auto;padding-inline:var(--gutter)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3{margin:0;line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+[hidden]{display:none!important}
+
+/* faixa de modelo */
+.tpl{background:var(--warn);color:#2B1D00;font-size:.85rem;font-weight:600;text-align:center;padding:.4rem var(--gutter)}
+.tpl button{text-decoration:underline;margin-left:.5rem;font-weight:700}
+
+/* cabeçalho */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(8,6,15,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:.8rem;min-height:68px}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none;min-width:0}
+.brand img{width:46px;height:46px;border-radius:12px;flex:none}
+.brand b{display:block;font-size:1.1rem;font-weight:800;line-height:1.05}
+.brand small{display:block;color:var(--muted);font-size:.75rem}
+.search{flex:1;max-width:460px;margin-inline:auto;position:relative}
+.search input{width:100%;min-height:44px;padding:.5rem 1rem .5rem 2.6rem;background:var(--panel);border:1px solid var(--line);border-radius:999px;color:var(--fg)}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:.9rem;top:50%;translate:0 -50%;width:18px;height:18px;color:var(--muted)}
+.tools{display:flex;gap:.5rem;margin-left:auto}
+.ib{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
+.ib:hover{border-color:var(--accent-2)}
+.ib svg{width:20px;height:20px}
+.ib.cart{background:var(--accent);border-color:var(--accent)}
+.ib[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.count{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--lilac);color:var(--ink);font-size:.72rem;font-weight:700;display:grid;place-items:center}
+@media(max-width:720px){
+  .top-row{flex-wrap:wrap;padding-block:.6rem}
+  .brand small{display:none}
+  .search{order:3;flex:1 0 100%;max-width:none;margin:0}
+}
+
+/* hero */
+.hero{padding-block:clamp(28px,5vw,56px)}
+.hero-in{display:grid;grid-template-columns:1.2fr .8fr;gap:2rem;align-items:center}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:800}
+.hero h1 span{color:var(--accent-2)}
+.hero p.sub{color:var(--muted);font-size:1.1rem;max-width:46ch;margin-top:1rem}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.4rem}
+.hero-art{display:grid;place-items:center}
+.hero-art img{width:min(300px,70%);border-radius:28px;box-shadow:0 20px 60px rgba(139,43,226,.45)}
+@media(max-width:820px){.hero-in{grid-template-columns:1fr}.hero-art{order:-1}.hero-art img{width:150px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.6rem 1.4rem;border-radius:14px;font-weight:700;text-decoration:none;transition:transform .12s,filter .12s,background .12s}
+.btn:active{transform:translateY(1px)}
+.btn-main{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 30px rgba(139,43,226,.4)}
+.btn-main:hover{filter:brightness(1.1)}
+.btn-ghost{border:1px solid var(--line);background:var(--panel)}
+.btn-ghost:hover{border-color:var(--accent-2)}
+.btn-lilac{background:var(--lilac);color:var(--ink)}
+.btn-lilac:hover{background:var(--lilac-2)}
+.btn-sm{min-height:40px;padding:.35rem 1rem;border-radius:12px;font-size:.92rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* confiança */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;padding-bottom:1.6rem}
+.trust div{display:flex;gap:.7rem;align-items:center;padding:.8rem 1rem;background:var(--panel);border:1px solid var(--line);border-radius:14px;font-weight:600;font-size:.95rem}
+.trust svg{width:24px;height:24px;color:var(--accent-2);flex:none}
+
+/* catálogo */
+.section{padding-block:clamp(24px,4vw,48px)}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:.8rem 2rem;margin-bottom:1.2rem}
+.sec-head h2{font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:800}
+.sec-head p{color:var(--muted)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.4rem;margin-bottom:1.2rem;scrollbar-width:thin}
+.chip{flex:none;padding:.5rem 1.1rem;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-weight:600;font-size:.95rem}
+.chip:hover{border-color:var(--accent-2)}
+.chip[aria-pressed="true"]{background:var(--lilac);color:var(--ink);border-color:var(--lilac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.1rem}
+.card{--acc:var(--accent);position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 22%,var(--lilac)) 0%,var(--lilac) 100%);color:var(--ink);border-radius:22px;overflow:hidden;min-width:0;transition:transform .18s,box-shadow .18s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 44px color-mix(in srgb,var(--acc) 45%,transparent)}
+.card-art{margin:10px 10px 0;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:var(--acc)}
+.card-art svg,.card-art img{display:block;width:100%;height:100%;object-fit:cover}
+.card-body{display:flex;flex-direction:column;gap:.55rem;padding:1rem 1.1rem 1.1rem;flex:1}
+.cat{font-size:.78rem;font-weight:700;color:color-mix(in srgb,var(--acc) 80%,#000)}
+.card h3{font-size:1.25rem;font-weight:800}
+.desc{font-size:.92rem;color:#4B3F6B}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:999px;background:rgba(26,16,48,.08);font-size:.78rem;font-weight:600}
+.tag svg{width:13px;height:13px}
+.card-foot{margin-top:auto;display:flex;align-items:end;justify-content:space-between;gap:.6rem;flex-wrap:wrap;padding-top:.4rem}
+.from{font-size:.75rem;color:#5B4F7B}
+.pr{font-size:1.7rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.pr s{display:block;font-size:.8rem;font-weight:500;color:#6E6390;margin-bottom:.15rem}
+.off{position:absolute;top:18px;left:18px;z-index:2;background:var(--ok);color:#052B19;padding:.2rem .6rem;border-radius:999px;font-weight:800;font-size:.8rem}
+.empty{padding:2.4rem 0;color:var(--muted)}
+.card .btn-main{background:var(--ink);box-shadow:none;color:#fff}
+.card .btn-main:hover{background:#2A1B4D}
+
+/* como funciona + faq */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;padding:1.1rem;background:var(--panel);border:1px solid var(--line);border-radius:18px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;font-weight:800;margin-bottom:.7rem}
+.steps b{display:block;font-size:1.1rem;margin-bottom:.2rem}
+.steps span{color:var(--muted);font-size:.92rem}
+.faq{display:grid;gap:.6rem;max-width:820px}
+.faq details{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:1rem;padding:1rem 1.2rem;font-weight:700}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent-2);font-size:1.4rem;line-height:1}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{padding:0 1.2rem 1.1rem;color:var(--muted);max-width:62ch}
+
+/* rodapé */
+.foot{border-top:1px solid var(--line);background:var(--bg-2);color:var(--muted);font-size:.9rem;margin-top:2rem}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem;padding-block:2rem}
+.foot h4{margin:0 0 .6rem;color:var(--fg);font-size:1rem}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:.4rem}
+.foot button{text-align:left;text-decoration:underline}
+.ph{background:rgba(255,200,87,.18);color:var(--warn);padding:0 .3rem;border-radius:4px}
+.foot .small{border-top:1px solid var(--line);padding-block:1rem;font-size:.8rem}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr}}
+
+/* painéis */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(4,2,10,.7)}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:70;width:min(440px,100vw);background:var(--bg-2);border-left:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid var(--line)}
+.drawer-head h2{font-size:1.4rem}
+.x{display:grid;place-items:center;width:40px;height:40px;font-size:1.6rem;line-height:1;border-radius:10px}
+.x:hover{background:var(--panel)}
+.items{flex:1;overflow-y:auto;padding:0 1.2rem}
+.items .empty{padding:2rem 0}
+.line{display:grid;grid-template-columns:60px 1fr auto;gap:.8rem;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--line)}
+.line .thumb{width:60px;height:60px;border-radius:12px;overflow:hidden;background:var(--panel)}
+.line .thumb svg,.line .thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.line b{display:block;font-size:.98rem;line-height:1.2}
+.line small{color:var(--muted)}
+.qty{display:inline-flex;align-items:center;margin-top:.35rem;border:1px solid var(--line);border-radius:10px}
+.qty button{width:32px;height:32px;font-size:1.1rem;font-weight:700}
+.qty button:hover{background:var(--panel)}
+.qty span{min-width:28px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.lr{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.lr .btn{margin-top:.4rem}
+.lr button.rm{display:block;margin:.3rem 0 0 auto;font-size:.78rem;color:var(--muted);text-decoration:underline;font-weight:400}
+.drawer-foot{padding:1rem 1.2rem calc(1rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:grid;gap:.6rem}
+.sum{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.sum.total{font-size:1.5rem;font-weight:800}
+.note{font-size:.82rem;color:var(--muted)}
+
+/* produto (folha) */
+.sheet{position:fixed;inset:0;z-index:75;display:grid;place-items:center;padding:16px;background:rgba(4,2,10,.75)}
+.sheet-box{--acc:var(--accent);width:min(860px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:var(--bg-2);border:1px solid var(--line);border-radius:24px;display:grid;grid-template-columns:.9fr 1.1fr;position:relative}
+.sheet-art{margin:16px;border-radius:18px;overflow:hidden;aspect-ratio:1/1;background:var(--acc);align-self:start}
+.sheet-art svg,.sheet-art img{display:block;width:100%;height:100%;object-fit:cover}
+.sheet-info{padding:1.4rem 1.4rem 1.4rem 0;display:flex;flex-direction:column;gap:.9rem;min-width:0}
+.sheet-info h2{font-size:1.7rem;font-weight:800;padding-right:2.4rem}
+.sheet-info .cat{color:var(--accent-2)}
+.sheet-box .x{position:absolute;top:10px;right:10px;background:var(--panel)}
+.vars{display:grid;gap:.5rem}
+.var{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;padding:.75rem .9rem;border:1px solid var(--line);border-radius:14px;background:var(--panel);cursor:pointer}
+.var:hover{border-color:var(--accent-2)}
+.var input{accent-color:var(--accent-2);width:18px;height:18px}
+.var:has(input:checked){border-color:var(--lilac);background:color-mix(in srgb,var(--acc) 22%,var(--panel))}
+.var b{display:block;font-size:.98rem}
+.var small{color:var(--muted)}
+.var .vp{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.var .vp s{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
+.buy{display:grid;gap:.6rem;margin-top:.2rem}
+.buy-row{display:flex;gap:.6rem;flex-wrap:wrap}
+.buy-row .btn{flex:1;min-width:150px}
+.total-line{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:1.5rem;font-variant-numeric:tabular-nums}
+.total-line span{font-size:.9rem;font-weight:500;color:var(--muted)}
+@media(max-width:700px){.sheet-box{grid-template-columns:1fr}.sheet-info{padding:0 1.2rem 1.4rem}.sheet-art{aspect-ratio:16/10;margin:12px 12px 0}}
+
+/* aviso, toast, modal legal, cookies */
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--cookie-h) + env(safe-area-inset-bottom,0px));translate:-50% 0;z-index:95;background:var(--lilac);color:var(--ink);padding:.65rem 1.1rem;border-radius:12px;font-weight:600;max-width:calc(100vw - 32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.modal{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;background:rgba(4,2,10,.75)}
+.modal-box{width:min(640px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:1.4rem;position:relative;display:grid;gap:.7rem}
+.modal-box h2{font-size:1.5rem;padding-right:2.4rem}
+.modal-box .x{position:absolute;top:10px;right:10px}
+.modal-box p,.modal-box li{color:var(--muted);max-width:62ch}
+.modal-box ul{margin:0;padding-left:1.2rem;display:grid;gap:.3rem}
+.cookie{position:fixed;left:0;right:0;bottom:0;z-index:58;background:var(--panel);border-top:1px solid var(--accent);padding:1rem var(--gutter) calc(1rem + env(safe-area-inset-bottom,0px))}
+.cookie-in{max-width:1200px;margin-inline:auto;display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center;justify-content:space-between}
+.cookie p{max-width:68ch;font-size:.9rem;color:var(--muted)}
+.cookie .acts{display:flex;flex-wrap:wrap;gap:.5rem}
+.prefs{width:100%;display:grid;gap:.5rem}
+.prefs label{display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+.prefs input{margin-top:.25rem;width:18px;height:18px;accent-color:var(--accent-2)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
+.mono{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));font-weight:800;color:#fff;letter-spacing:.02em}
+.mono.big{width:min(240px,60%);aspect-ratio:1;height:auto;border-radius:36px;font-size:4.6rem;box-shadow:0 20px 60px rgba(139,43,226,.45)}
+@media(max-width:820px){.mono.big{width:110px;font-size:2.4rem;border-radius:24px}}
+.toast{z-index:130}
+.adm{position:fixed;inset:0;z-index:110;background:var(--bg);overflow-y:auto;padding-bottom:48px}
+.adm-top{position:sticky;top:0;z-index:2;background:rgba(8,6,15,.96);border-bottom:1px solid var(--line)}
+.adm-bar{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-block:.8rem}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.tab{padding:.5rem 1rem;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-weight:600}
+.tab[aria-selected="true"]{background:var(--lilac);color:var(--ink);border-color:var(--lilac)}
+.adm-body{padding-block:1.4rem;display:grid;gap:1rem}
+.adm-h{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.adm-h h2{font-size:1.5rem}
+.row{display:grid;grid-template-columns:64px 1fr auto;gap:.9rem;align-items:center;padding:.8rem;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.row .thumb{width:64px;height:64px;border-radius:12px;overflow:hidden;background:var(--bg-2)}
+.row .thumb svg,.row .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.row .acts{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:700px){.row{grid-template-columns:64px 1fr}.row .acts{grid-column:1/-1;justify-content:flex-start}}
+.fld{display:grid;gap:.3rem;min-width:0}
+.fld label{font-weight:600;font-size:.9rem}
+.fld input,.fld textarea,.fld select{width:100%;min-height:44px;padding:.5rem .8rem;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;color:var(--fg);font:inherit}
+.fld textarea{min-height:96px;resize:vertical}
+.fld input[type=color]{padding:.2rem;cursor:pointer}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.vrow{display:grid;grid-template-columns:1.3fr 1.1fr .8fr .8fr 1.6fr auto;gap:.6rem;align-items:end;padding:.8rem;border:1px solid var(--line);border-radius:12px;background:var(--bg-2)}
+@media(max-width:900px){.vrow{grid-template-columns:1fr 1fr}.vrow .wide{grid-column:1/-1}}
+.imgbox{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.imgbox .prev{width:180px;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:var(--bg-2)}
+.imgbox .prev svg,.imgbox .prev img{width:100%;height:100%;object-fit:cover;display:block}
+.card-panel{padding:1.2rem;background:var(--panel);border:1px solid var(--line);border-radius:16px;display:grid;gap:1rem}
+.btn-danger{background:var(--bad);color:#2B0610}
+.chk{display:flex;gap:.6rem;align-items:center;font-size:.95rem}
+.chk input{width:18px;height:18px;accent-color:var(--accent-2)}
+.adm textarea.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;min-height:140px}
+.adm .note{color:var(--muted);font-size:.85rem}
+.adm .empty{color:var(--muted)}
+.msg{color:var(--bad);font-size:.9rem;min-height:1.2em}
+.adm-login{display:grid;place-items:center;min-height:70vh;padding-block:2rem}
+.adm-login form{max-width:420px;width:100%}
+.reveal{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.4rem;font-weight:700;padding:.8rem 1rem;background:var(--bg-2);border:1px dashed var(--accent-2);border-radius:12px;word-break:break-all;color:var(--lilac);user-select:all;margin:.6rem 0 1rem}
+.linkbtn{color:var(--accent-2);text-decoration:underline;font-weight:600;font-size:.9rem;background:none;border:0;cursor:pointer}
+</style>
+
+</head>
+<body>
+<div class="tpl" id="tpl" hidden>Modelo da loja: produtos, valores e links de pagamento são exemplos. Edite tudo no Painel do lojista.<button type="button" id="tpl-x">Ocultar</button></div>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#topo" aria-label="CyberTela, início">
+      <span id="logo-slot"></span>
+      <span><b id="brand-name">CyberTela</b><small id="brand-tag">Loja de produtos digitais</small></span>
+    </a>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <label class="sr" for="q">Buscar produtos</label>
+      <input id="q" type="search" placeholder="Buscar produtos" autocomplete="off">
+    </div>
+    <div class="tools">
+      <button class="ib" id="mic" type="button" aria-label="Comando de voz" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <a class="ib" id="support" href="#" aria-label="Suporte" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>
+      </a>
+      <button class="ib cart" id="cart-open" type="button" aria-label="Abrir carrinho">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4h3l2.4 11h10.2L21 7H7"/><circle cx="10" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>
+        <span class="count" id="cart-count" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="topo">
+  <!-- CENA 1: Hero — O Choque da Promessa -->
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <div class="telemetry-badge" data-fx="surgir" data-fx-atraso="100">
+          <span class="pulse-dot"></span> Robô de Entrega Ativo · Envio em 0.2s · 24/7
+        </div>
+        <h1 id="hero-h" data-fx="palavras">Produtos digitais com <span>entrega automática</span>.</h1>
+        <p class="sub" id="hero-sub" data-fx="surgir" data-fx-atraso="250">Escolha o produto, selecione o plano e finalize no pagamento seguro. O acesso chega assim que o pagamento é confirmado.</p>
+        <div class="hero-cta" data-fx="subir" data-fx-atraso="350">
+          <a class="btn btn-main" href="#catalogo">Ver produtos</a>
+          <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
+        </div>
+      </div>
+      <div class="hero-art" id="hero-slot" data-fx-mouse="16"></div>
+    </div>
+  </section>
+
+  <!-- CENA 2: O Cofre de Segurança (Trust Pillars) -->
+  <section class="trust-section">
+    <div class="wrap">
+      <div class="trust-head" data-fx="esquerda">
+        <span class="sec-badge">Garantia & Velocidade</span>
+        <h2>Segurança de ponta a ponta</h2>
+        <p>Sem espera por atendente humano, sem burocracia e com respaldo completo.</p>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-item" data-fx="subir" data-fx-atraso="0">
+          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg></div>
+          <div><b>Entrega automática</b><span>Acesso liberado no mesmo segundo da confirmação do Pix ou cartão.</span></div>
+        </div>
+        <div class="trust-item" data-fx="subir" data-fx-atraso="100">
+          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg></div>
+          <div><b>Gateway seguro</b><span>Transações criptografadas com proteção total e comprovante emitido na hora.</span></div>
+        </div>
+        <div class="trust-item" data-fx="subir" data-fx-atraso="200">
+          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div>
+          <div><b>Pix e cartão</b><span>Pague com o método de sua preferência com baixa bancária em tempo real.</span></div>
+        </div>
+        <div class="trust-item" data-fx="subir" data-fx-atraso="300">
+          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></div>
+          <div><b>Suporte humano</b><span>Canal direto com nossa equipe para tirar qualquer dúvida antes ou depois da compra.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CENA 3: O Showroom do Catálogo (O PICO) -->
+  <section class="section" id="catalogo" aria-labelledby="h-cat">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-fx="esquerda">
+          <span class="sec-badge">Showroom Digital</span>
+          <h2 id="h-cat" data-fx="palavras">Catálogo de Produtos</h2>
+          <p id="result-count" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por categoria" data-fx="surgir" data-fx-atraso="150"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- CENA 4: A Máquina por Trás & O Desbloqueio Instantâneo (Movimento-Assinatura - Cena Fixa) -->
+  <section class="scene-signature" data-fx-fixa data-fx-altura="3" id="como-funciona" aria-labelledby="h-how">
+    <div class="fx-palco">
+      <div class="sig-container">
+        <div class="sig-info">
+          <div>
+            <span class="sec-badge">Como Funciona</span>
+            <h2 id="h-how">Da escolha ao acesso em 4 passos sob controle.</h2>
+            <p>O robô CyberTela cuida de tudo. Gire a rolagem e acompanhe a validação acontecendo em milissegundos.</p>
+          </div>
+          <ol class="timeline">
+            <li class="timeline-item active" id="tl-step-1">
+              <span class="timeline-num">1</span>
+              <div><b>Escolha o produto</b><span>Abra o card, veja as especificações e selecione o plano ideal.</span></div>
+            </li>
+            <li class="timeline-item" id="tl-step-2">
+              <span class="timeline-num">2</span>
+              <div><b>Pague no gateway seguro</b><span>Pague via Pix instantâneo ou cartão com total proteção.</span></div>
+            </li>
+            <li class="timeline-item" id="tl-step-3">
+              <span class="timeline-num">3</span>
+              <div><b>Desbloqueio quântico automático</b><span>O laser detecta o Pix e gera a sua chave sem intervenção humana.</span></div>
+            </li>
+            <li class="timeline-item" id="tl-step-4">
+              <span class="timeline-num">4</span>
+              <div><b>Acesso pronto para usar</b><span>Receba os links e instruções imediatamente na tela e no seu e-mail.</span></div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="terminal-box" id="sig-terminal">
+          <div class="term-head">
+            <div class="term-dots"><span class="td-red"></span><span class="td-yellow"></span><span class="td-green"></span></div>
+            <span>CYBERTELA AUTOMATION HUB · v2.4</span>
+            <span>24/7 ONLINE</span>
+          </div>
+          <div class="term-body">
+            <div class="scan-area" id="sig-scan-area">
+              <div class="scan-laser" id="sig-laser"></div>
+              <div class="qr-mock">
+                <div class="qr-frame">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <path d="M10 7h4M7 10v4M17 10v4M10 17h4"/>
+                  </svg>
+                </div>
+                <span>PIX QR-CODE INSTANTÂNEO</span>
+              </div>
+            </div>
+            <div class="term-status-badge" id="sig-status-badge">
+              <span id="sig-status-txt">AGUARDANDO TRANSAÇÃO PIX...</span>
+              <span id="sig-status-ms">0.2s</span>
+            </div>
+            <div class="term-key-box">
+              <span class="term-key-label">Chave de Licença Gerada</span>
+              <span class="term-key-val" id="sig-key-val">CHAVE: •••••-•••••-•••••</span>
+            </div>
+            <div class="term-foot-note">Gire a rodinha do mouse para simular a validação em tempo real</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CENA 5: Fechamento Seguro & FAQ -->
+  <section class="section" id="duvidas" aria-labelledby="h-faq">
+    <div class="wrap">
+      <div class="sec-head" data-fx="subir">
+        <div>
+          <span class="sec-badge">Dúvidas Frequentes</span>
+          <h2 id="h-faq">Respostas diretas, sem letras miúdas</h2>
+          <p>Tire suas dúvidas ou fale diretamente com a gente.</p>
+        </div>
+      </div>
+      <div class="faq" id="faq" data-fx="subir" data-fx-atraso="100"></div>
+
+      <!-- CTA de Fechamento -->
+      <div class="final-cta" data-fx="crescer" data-fx-atraso="150">
+        <div class="final-cta-in">
+          <div>
+            <h3>Pronto para garantir seu produto digital?</h3>
+            <p>Entrega em 0 segundos após a confirmação. Escolha o seu produto agora e receba o acesso imediato.</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn btn-main" href="#catalogo">Explorar o Catálogo</a>
+            <a class="btn btn-ghost" id="final-support" href="#">Falar com Suporte</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4 id="foot-brand">CyberTela</h4>
+        <p><span class="ph">[PREENCHER: razão social]</span><br>CNPJ <span class="ph">[PREENCHER: CNPJ]</span><br><span class="ph">[PREENCHER: endereço]</span></p>
+        <p style="margin-top:.6rem">Contato: <span class="ph">[PREENCHER: e-mail]</span> · <span class="ph">[PREENCHER: WhatsApp]</span></p>
+      </div>
+      <div>
+        <h4>Loja</h4>
+        <ul><li><a href="#catalogo">Catálogo</a></li><li><a href="#duvidas">Dúvidas</a></li></ul>
+      </div>
+      <div>
+        <h4>Regras</h4>
+        <ul>
+          <li><button type="button" data-legal="privacidade">Política de privacidade</button></li>
+          <li><button type="button" data-legal="termos">Termos de compra</button></li>
+          <li><button type="button" data-legal="reembolso">Reembolso</button></li>
+          <li><button type="button" id="cookie-reopen">Preferências de cookies</button></li>
+          <li id="admin-li"><a href="#admin">Painel do lojista</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="small">Os produtos vendidos nesta loja são de responsabilidade do vendedor. Marcas citadas pertencem aos seus titulares e só podem aparecer com autorização.</div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<aside class="drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+  <div class="drawer-head"><h2 id="cart-title">Seu carrinho</h2><button class="x" type="button" id="cart-close" aria-label="Fechar carrinho">&times;</button></div>
+  <div class="items" id="cart-items"></div>
+  <div class="drawer-foot">
+    <div class="sum total"><span>Total</span><span id="cart-total">R$ 0,00</span></div>
+    <p class="note" id="cart-note"></p>
+    <a class="btn btn-main" id="cart-pay" href="#" target="_blank" rel="noopener" hidden>Finalizar no gateway</a>
+    <button class="btn btn-ghost" type="button" id="cart-clear">Limpar carrinho</button>
+  </div>
+</aside>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-name" hidden>
+  <div class="sheet-box" id="sheet-box">
+    <button class="x" type="button" id="sheet-close" aria-label="Fechar produto">&times;</button>
+    <div class="sheet-art" id="sh-art"></div>
+    <div class="sheet-info">
+      <div><div class="cat" id="sh-cat"></div><h2 id="sh-name"></h2></div>
+      <p class="desc" id="sh-desc" style="color:var(--muted)"></p>
+      <div class="tags" id="sh-tags"></div>
+      <div>
+        <b style="font-size:.95rem">Escolha uma opção</b>
+        <div class="vars" id="sh-vars" role="radiogroup" aria-label="Opções do produto" style="margin-top:.5rem"></div>
+      </div>
+      <div class="buy">
+        <div class="total-line"><span>Total</span><b id="sh-total"></b></div>
+        <div class="buy-row">
+          <a class="btn btn-main" id="sh-buy" href="#" target="_blank" rel="noopener">Comprar agora</a>
+          <button class="btn btn-ghost" type="button" id="sh-add">Adicionar ao carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal-box"><button class="x" type="button" id="modal-close" aria-label="Fechar">&times;</button><h2 id="modal-title"></h2><div id="modal-body"></div></div>
+</div>
+
+<div class="cookie" id="cookie" role="region" aria-label="Aviso de cookies" hidden>
+  <div class="cookie-in">
+    <p>Usamos cookies essenciais para o carrinho funcionar. Com a sua permissão, usamos também cookies de estatística e de marketing. Veja a <button type="button" style="text-decoration:underline" data-legal="privacidade">política de privacidade</button>.</p>
+    <div class="acts">
+      <button class="btn btn-lilac btn-sm" type="button" id="ck-all">Aceitar todos</button>
+      <button class="btn btn-ghost btn-sm" type="button" id="ck-ess">Só os essenciais</button>
+      <button class="btn btn-ghost btn-sm" type="button" id="ck-cfg" aria-expanded="false" aria-controls="ck-prefs">Personalizar</button>
+    </div>
+    <div class="prefs" id="ck-prefs" hidden>
+      <label><input type="checkbox" checked disabled> Essenciais: carrinho e preferências. Sempre ativos.</label>
+      <label><input type="checkbox" id="ck-stat"> Estatística: nos ajuda a entender o que funciona.</label>
+      <label><input type="checkbox" id="ck-mkt"> Marketing: anúncios e ofertas mais relevantes.</label>
+      <div><button class="btn btn-lilac btn-sm" type="button" id="ck-save">Salvar escolhas</button></div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="store-data">{"settings": {"brand": "CyberTela", "tagline": "Loja de produtos digitais", "heroTitle": "Produtos digitais com entrega automática.", "heroHighlight": "entrega automática", "heroSub": "Escolha o produto, selecione o plano e finalize no pagamento seguro. O acesso chega assim que o pagamento é confirmado.", "supportUrl": "", "cartCheckoutUrl": "", "templateMode": true, "showAdminLink": true, "logo": "", "adminHash": "1f5dfdc7b5bf66cfa80fb06467de585c1392a9c5f16c382f4e7daad696564f31", "adminSalt": "16f98d33f841d410f4aefc8cd51c44b2", "recovery": {"salt": "b407c27cd99f09db96422ad0ad5e5992", "iv": "b3a0a2dac7579d7ecf6013bf", "ct": "d2bef3bd35ec70412f3a356d91526ebce7000eb63c35953f891f4a66c524ad326c30cb57f3de96"}}, "categories": ["Templates", "Cursos", "Ferramentas", "Mentorias", "Serviços"], "products": [{"id": "p1", "name": "Pack de Templates Pro", "cat": "Templates", "color": "#8B2BE2", "image": "", "desc": "Descreva aqui o que o cliente recebe, o formato e como acessa.", "tags": ["Entrega automática", "Acesso imediato"], "variations": [{"name": "Pack básico", "note": "Exemplo de opção", "price": 29.9, "old": 49.9, "checkout": ""}, {"name": "Pack completo", "note": "Exemplo de opção", "price": 59.9, "old": 99.9, "checkout": ""}]}, {"id": "p2", "name": "Curso Marketing Local", "cat": "Cursos", "color": "#2F6FE0", "image": "", "desc": "Descreva o conteúdo, a carga horária e o que está incluso.", "tags": ["Entrega automática", "Suporte incluso"], "variations": [{"name": "Acesso 6 meses", "note": "Exemplo de opção", "price": 97, "old": 197, "checkout": ""}, {"name": "Acesso vitalício", "note": "Exemplo de opção", "price": 147, "old": 297, "checkout": ""}]}, {"id": "p3", "name": "Kit de Prompts de IA", "cat": "Ferramentas", "color": "#14A98A", "image": "", "desc": "Descreva a coleção de prompts, para quais tarefas serve e o formato do arquivo.", "tags": ["Entrega automática"], "variations": [{"name": "Kit único", "note": "Exemplo de opção", "price": 24.9, "old": 39.9, "checkout": ""}]}, {"id": "p4", "name": "Mentoria em Grupo", "cat": "Mentorias", "color": "#E8479A", "image": "", "desc": "Descreva a duração, a frequência dos encontros e as vagas.", "tags": ["Vagas limitadas", "Suporte incluso"], "variations": [{"name": "1 mês", "note": "Exemplo de opção", "price": 197, "old": 297, "checkout": ""}, {"name": "3 meses", "note": "Exemplo de opção", "price": 497, "old": 891, "checkout": ""}]}, {"id": "p5", "name": "Plano de Conteúdo Mensal", "cat": "Serviços", "color": "#F59B1B", "image": "", "desc": "Descreva o que o serviço entrega, prazos e como o cliente envia as informações.", "tags": ["Sob encomenda"], "variations": [{"name": "12 posts", "note": "Exemplo de opção", "price": 149, "old": 0, "checkout": ""}, {"name": "24 posts", "note": "Exemplo de opção", "price": 259, "old": 0, "checkout": ""}]}, {"id": "p6", "name": "Auditoria de Perfil Google", "cat": "Serviços", "color": "#D8262B", "image": "", "desc": "Descreva o relatório entregue, o prazo e o que o cliente precisa fornecer.", "tags": ["Sob encomenda", "Relatório em PDF"], "variations": [{"name": "Auditoria completa", "note": "Exemplo de opção", "price": 89.9, "old": 129.9, "checkout": ""}]}, {"id": "p7", "name": "Planilha de Gestão", "cat": "Ferramentas", "color": "#6A6FF5", "image": "", "desc": "Descreva as abas, os recursos e a compatibilidade (Excel, Google Planilhas).", "tags": ["Entrega automática", "Acesso imediato"], "variations": [{"name": "Planilha completa", "note": "Exemplo de opção", "price": 34.9, "old": 59.9, "checkout": ""}]}, {"id": "p8", "name": "E-book Guia de Vendas", "cat": "Cursos", "color": "#3DA5E0", "image": "", "desc": "Descreva o tema, o número de páginas e o público indicado.", "tags": ["Entrega automática"], "variations": [{"name": "E-book (PDF)", "note": "Exemplo de opção", "price": 19.9, "old": 39.9, "checkout": ""}]}]}</script>
+<script>
+/* ======================= CyberTela: loja + painel do lojista =======================
+   Produtos, categorias e ajustes ficam no bloco JSON "store-data" desta página.
+   Edite tudo pelo painel (link "Painel do lojista" no rodapé ou o endereço terminado em #admin),
+   depois baixe a loja atualizada e hospede o arquivo novo no lugar do antigo.
+   Venda apenas produtos que você tem direito de vender e use marcas de terceiros só com autorização. */
+const ORIGINAL_HTML = '<!doctype html>\n' + document.documentElement.outerHTML;
+const $ = (s, r=document) => r.querySelector(s);
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u||'').trim()) ? String(u).trim() : '';
+const safeColor = c => /^#[0-9a-f]{6}$/i.test(c||'') ? c : '#8B2BE2';
+const clone = o => JSON.parse(JSON.stringify(o));
+const toHex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+const hexToBytes = h => Uint8Array.from(h.match(/../g), x => parseInt(x, 16));
+async function aesKey(code, saltBytes){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(code).trim().toLowerCase()), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name:'PBKDF2', salt:saltBytes, iterations:200000, hash:'SHA-256' }, base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function encryptPw(pw, code){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await aesKey(code, salt);
+  const ct = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, new TextEncoder().encode(pw));
+  return { salt:toHex(salt), iv:toHex(iv), ct:toHex(ct) };
+}
+async function decryptPw(code){
+  const r = CONFIG.recovery; if (!r) throw new Error('sem recuperação');
+  const key = await aesKey(code, hexToBytes(r.salt));
+  return new TextDecoder().decode(await crypto.subtle.decrypt({ name:'AES-GCM', iv:hexToBytes(r.iv) }, key, hexToBytes(r.ct)));
+}
+async function derive(pass, saltHex){
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveBits']);
+  const salt = Uint8Array.from(saltHex.match(/../g), h => parseInt(h, 16));
+  return toHex(await crypto.subtle.deriveBits({ name:'PBKDF2', salt, iterations:200000, hash:'SHA-256' }, key, 256));
+}
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+
+const SETTINGS_DEFAULTS = {
+  brand:'CyberTela', tagline:'Loja de produtos digitais',
+  heroTitle:'Produtos digitais com entrega automática.', heroHighlight:'entrega automática',
+  heroSub:'Escolha o produto, selecione o plano e finalize no pagamento seguro. O acesso chega assim que o pagamento é confirmado.',
+  supportUrl:'', cartCheckoutUrl:'', templateMode:true, showAdminLink:true, logo:'', adminHash:'', adminSalt:'', recovery:null
+};
+function normalize(d){
+  if (!d || typeof d !== 'object') return null;
+  const s = Object.assign({}, SETTINGS_DEFAULTS, d.settings || {});
+  s.supportUrl = safeUrl(s.supportUrl); s.cartCheckoutUrl = safeUrl(s.cartCheckoutUrl);
+  if (!/^(data:image\/|https?:\/\/)/.test(s.logo || '')) s.logo = '';
+  s.adminHash = /^[0-9a-f]{64}$/.test(s.adminHash || '') ? s.adminHash : '';
+  s.adminSalt = /^[0-9a-f]{32}$/.test(s.adminSalt || '') ? s.adminSalt : '';
+  const hx = v => typeof v === 'string' && /^[0-9a-f]+$/.test(v);
+  s.recovery = (s.recovery && hx(s.recovery.salt) && hx(s.recovery.iv) && hx(s.recovery.ct)) ? { salt:s.recovery.salt, iv:s.recovery.iv, ct:s.recovery.ct } : null;
+  const cats = (Array.isArray(d.categories) ? d.categories : []).map(c => String(c).trim()).filter(c => c && c !== 'Todos');
+  const products = (Array.isArray(d.products) ? d.products : []).map(p => {
+    if (!p || typeof p !== 'object' || !p.name) return null;
+    const vars = (Array.isArray(p.variations) ? p.variations : []).filter(v => v && v.name).map(v => ({ name:String(v.name), note:String(v.note||''), price:Number(v.price)||0, old:Number(v.old)||0, checkout:safeUrl(v.checkout) }));
+    if (!vars.length) return null;
+    return { id:String(p.id || 'p' + Math.random().toString(36).slice(2,9)), name:String(p.name), cat:String(p.cat||''), color:safeColor(p.color), image:String(p.image||''), desc:String(p.desc||''), tags:(Array.isArray(p.tags) ? p.tags : []).map(String), variations:vars };
+  }).filter(Boolean);
+  if (!cats.length) cats.push('Geral');
+  products.forEach(p => { if (!p.cat) p.cat = cats[0]; if (!cats.includes(p.cat)) cats.push(p.cat); });
+  return { settings:s, categories:cats, products };
+}
+let DEFAULT = null;
+try { DEFAULT = normalize(JSON.parse($('#store-data').textContent)); } catch(e){}
+if (!DEFAULT) DEFAULT = normalize({ settings:{}, categories:['Geral'], products:[] });
+let DATA = normalize(store.get('cy-draft', null)) || clone(DEFAULT);
+let CONFIG, CATEGORIES, PRODUCTS, BRL;
+function sync(){ CONFIG = DATA.settings; CATEGORIES = DATA.categories; PRODUCTS = DATA.products; BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' }); }
+sync();
+const money = n => BRL.format(n);
+const prod = id => PRODUCTS.find(p => p.id === id);
+const pct = v => v.old > v.price ? Math.round((1 - v.price/v.old) * 100) : 0;
+const minVar = p => p.variations.reduce((a,b) => b.price < a.price ? b : a);
+let uid = 0;
+function art(p){
+  if (p.image) return `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`;
+  const id = 'g' + (++uid), c = safeColor(p.color);
+  return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Espaço reservado para a foto de ${esc(p.name||'produto')}">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="#150F26"/></linearGradient></defs>
+    <rect width="320" height="200" fill="url(#${id})"/>
+    <circle cx="250" cy="40" r="90" fill="#fff" opacity=".1"/><circle cx="60" cy="190" r="70" fill="#fff" opacity=".08"/>
+    <rect x="112" y="56" width="96" height="88" rx="18" fill="#fff" opacity=".18"/>
+    <path d="M160 74l8 18 19 2-14 13 4 19-17-10-17 10 4-19-14-13 19-2z" fill="#fff" opacity=".9"/>
+    <text x="160" y="172" text-anchor="middle" font-family="Outfit,Arial,sans-serif" font-size="11" fill="#fff" opacity=".75">foto do produto</text></svg>`;
+}
+const TAGICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+const FAQ = [
+  ['Como recebo o produto?', 'Depois da confirmação do pagamento no gateway, o acesso é enviado para o contato que você informar. Ajuste esta resposta ao seu fluxo real.'],
+  ['Quais formas de pagamento?', 'As formas disponíveis são as do gateway escolhido, como Pix e cartão. Ajuste conforme o seu gateway.'],
+  ['Posso pedir reembolso?', 'Informe aqui a sua política de reembolso e o prazo. O Código de Defesa do Consumidor prevê 7 dias de arrependimento em compras feitas fora da loja física.'],
+  ['Como falo com o suporte?', 'Use o botão de suporte no topo da página.']
+];
+
+/* ---------- marca, textos e logo ---------- */
+function monogram(){ const caps = (CONFIG.brand.match(/[A-Z]/g) || []).slice(0,2).join(''); return caps || CONFIG.brand.slice(0,2).toUpperCase(); }
+function applyBrand(){
+  document.title = CONFIG.brand;
+  $('#brand-name').textContent = CONFIG.brand; $('#brand-tag').textContent = CONFIG.tagline;
+  $('#foot-brand').textContent = CONFIG.brand;
+  document.querySelector('.brand').setAttribute('aria-label', CONFIG.brand + ', início');
+  const t = CONFIG.heroTitle || '', h = CONFIG.heroHighlight || '', i = h ? t.indexOf(h) : -1;
+  $('#hero-h').innerHTML = i < 0 ? esc(t) : esc(t.slice(0,i)) + '<span>' + esc(h) + '</span>' + esc(t.slice(i + h.length));
+  $('#hero-sub').textContent = CONFIG.heroSub;
+  $('#logo-slot').innerHTML = CONFIG.logo ? `<img src="${esc(CONFIG.logo)}" alt="">` : `<span class="mono">${esc(monogram())}</span>`;
+  $('#hero-slot').innerHTML = CONFIG.logo ? `<img src="${esc(CONFIG.logo)}" alt="Logo ${esc(CONFIG.brand)}">` : `<span class="mono big" aria-hidden="true">${esc(monogram())}</span>`;
+  $('#support').href = CONFIG.supportUrl || '#';
+  $('#tpl').hidden = !CONFIG.templateMode;
+  $('#admin-li').hidden = !CONFIG.showAdminLink;
+  $('#faq').innerHTML = FAQ.map(([q,a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
+}
+$('#support').addEventListener('click', e => { if (!CONFIG.supportUrl){ e.preventDefault(); toast('Defina o link de suporte no Painel, aba Loja.'); } });
+$('#tpl-x').addEventListener('click', () => $('#tpl').hidden = true);
+
+/* ---------- catálogo ---------- */
+let cat = 'Todos', query = '';
+function renderChips(){
+  $('#chips').innerHTML = ['Todos', ...CATEGORIES].map(c => `<button class="chip" type="button" data-cat="${esc(c)}" aria-pressed="${c===cat}">${esc(c)}</button>`).join('');
+}
+function renderGrid(){
+  const q = norm(query);
+  const list = PRODUCTS.filter(p => (cat === 'Todos' || p.cat === cat) && (!q || norm(p.name + ' ' + p.cat + ' ' + p.desc).includes(q)));
+  $('#result-count').textContent = list.length + (list.length === 1 ? ' produto' : ' produtos');
+  $('#grid').innerHTML = list.length ? list.map((p, i) => { const v = minVar(p), d = pct(v); return `
+    <article class="card" style="--acc:${safeColor(p.color)}" data-fx="crescer" data-fx-atraso="${(i % 4) * 80}">
+      ${d ? `<span class="off">-${d}%</span>` : ''}
+      <div class="card-art">${art(p)}</div>
+      <div class="card-body">
+        <div class="cat">${esc(p.cat)}</div>
+        <h3>${esc(p.name)}</h3>
+        <p class="desc">${esc(p.desc)}</p>
+        <div class="tags">${p.tags.map(t => `<span class="tag">${TAGICON}${esc(t)}</span>`).join('')}</div>
+        <div class="card-foot">
+          <div>${p.variations.length > 1 ? '<div class="from">a partir de</div>' : ''}<div class="pr">${v.old > v.price ? `<s>${money(v.old)}</s>` : ''}${money(v.price)}</div></div>
+          <button class="btn btn-main btn-sm" type="button" data-open="${esc(p.id)}" aria-label="Ver opções de ${esc(p.name)}">Ver opções</button>
+        </div>
+      </div>
+    </article>`; }).join('') : '<p class="empty">Nenhum produto encontrado. Tente outra palavra ou volte para Todos.</p>';
+}
+$('#chips').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return; cat = b.dataset.cat; renderChips(); renderGrid(); });
+$('#q').addEventListener('input', e => { query = e.target.value; renderGrid(); });
+
+/* ---------- painéis (um por vez, com retorno de foco) ---------- */
+let lastFocus = null;
+const lock = on => { document.documentElement.style.overflow = on ? 'hidden' : ''; };
+function openCart(){ closeSheet(true); lastFocus = document.activeElement; $('#overlay').hidden = false; $('#cart').hidden = false; lock(true); $('#cart-close').focus(); }
+function closeCart(){ if ($('#cart').hidden) return; $('#cart').hidden = true; $('#overlay').hidden = true; lock(false); lastFocus && lastFocus.focus && lastFocus.focus(); }
+$('#cart-open').addEventListener('click', openCart);
+$('#cart-close').addEventListener('click', closeCart);
+$('#overlay').addEventListener('click', closeCart);
+
+/* ---------- folha do produto ---------- */
+let cur = null, curVar = 0;
+function openSheet(id){
+  const p = prod(id); if (!p) return;
+  closeCart(); lastFocus = document.activeElement; cur = p; curVar = 0;
+  $('#sheet-box').style.setProperty('--acc', safeColor(p.color));
+  $('#sh-art').innerHTML = art(p); $('#sh-cat').textContent = p.cat; $('#sh-name').textContent = p.name; $('#sh-desc').textContent = p.desc;
+  $('#sh-tags').innerHTML = p.tags.map(t => `<span class="tag" style="background:rgba(255,255,255,.08)">${TAGICON}${esc(t)}</span>`).join('');
+  $('#sh-vars').innerHTML = p.variations.map((v,i) => `
+    <label class="var"><input type="radio" name="var" value="${i}" ${i===0?'checked':''}>
+      <span><b>${esc(v.name)}</b><small>${esc(v.note||'')}</small></span>
+      <span class="vp">${v.old > v.price ? `<s>${money(v.old)}</s>` : ''}${money(v.price)}</span></label>`).join('');
+  syncSheet(); $('#sheet').hidden = false; lock(true); $('#sheet-close').focus();
+}
+function closeSheet(silent){ if ($('#sheet').hidden) return; $('#sheet').hidden = true; if (!silent){ lock(false); lastFocus && lastFocus.focus && lastFocus.focus(); } }
+function syncSheet(){
+  const v = cur.variations[curVar], buy = $('#sh-buy'), url = safeUrl(v.checkout);
+  $('#sh-total').textContent = money(v.price);
+  if (url){ buy.href = url; buy.removeAttribute('data-nolink'); } else { buy.href = '#'; buy.setAttribute('data-nolink','1'); }
+}
+$('#sh-vars').addEventListener('change', e => { if (e.target.name === 'var'){ curVar = Number(e.target.value); syncSheet(); } });
+$('#sh-buy').addEventListener('click', e => { if (e.currentTarget.hasAttribute('data-nolink')){ e.preventDefault(); toast('Este produto ainda não tem link de pagamento. Cadastre no Painel.'); } });
+$('#sh-add').addEventListener('click', () => { addToCart(cur.id, curVar); toast(`${cur.name} no carrinho`); });
+$('#sheet-close').addEventListener('click', () => closeSheet());
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) openSheet(b.dataset.open); });
+
+/* ---------- carrinho ---------- */
+let cart = store.get('cy-cart', []); // [{id, vi, q}]
+const saveCart = () => store.set('cy-cart', cart);
+const line = it => { const p = prod(it.id); return p && p.variations[it.vi] ? { p, v:p.variations[it.vi] } : null; };
+function addToCart(id, vi, n=1){
+  const f = cart.find(i => i.id === id && i.vi === vi);
+  if (f) f.q += n; else cart.push({ id, vi, q:n });
+  cart = cart.filter(i => i.q > 0 && line(i)); saveCart(); renderCart();
+}
+function renderCart(){
+  cart = cart.filter(i => line(i));
+  const n = cart.reduce((a,i) => a + i.q, 0);
+  $('#cart-count').textContent = n; $('#cart-count').hidden = n === 0;
+  $('#cart-items').innerHTML = cart.length ? cart.map((it,idx) => { const {p,v} = line(it), url = safeUrl(v.checkout); return `
+    <div class="line">
+      <div class="thumb">${art(p)}</div>
+      <div><b>${esc(p.name)}</b><small>${esc(v.name)} · ${money(v.price)}</small>
+        <div class="qty"><button type="button" data-q="${idx}" data-d="-1" aria-label="Diminuir">&minus;</button><span>${it.q}</span><button type="button" data-q="${idx}" data-d="1" aria-label="Aumentar">+</button></div></div>
+      <div class="lr">${money(v.price*it.q)}
+        <a class="btn btn-lilac btn-sm" href="${url ? esc(url) : '#'}" target="_blank" rel="noopener" data-pay="${url ? '' : '1'}">Pagar</a>
+        <button class="rm" type="button" data-rm="${idx}">Remover</button></div>
+    </div>`; }).join('') : '<p class="empty">Seu carrinho está vazio. Escolha um produto no catálogo.</p>';
+  const total = cart.reduce((a,it) => { const l = line(it); return a + (l ? l.v.price*it.q : 0); }, 0);
+  $('#cart-total').textContent = money(total);
+  $('#cart-note').textContent = cart.length ? (CONFIG.cartCheckoutUrl ? '' : 'Cada item é pago no seu próprio link do gateway. Use o botão Pagar de cada linha.') : '';
+  const pay = $('#cart-pay');
+  pay.hidden = !(cart.length && CONFIG.cartCheckoutUrl); if (CONFIG.cartCheckoutUrl) pay.href = CONFIG.cartCheckoutUrl;
+  $('#cart-clear').hidden = cart.length === 0;
+}
+$('#cart-items').addEventListener('click', e => {
+  const q = e.target.closest('[data-q]'); if (q){ const it = cart[Number(q.dataset.q)]; if (it){ it.q += Number(q.dataset.d); cart = cart.filter(i => i.q > 0); saveCart(); renderCart(); } return; }
+  const r = e.target.closest('[data-rm]'); if (r){ cart.splice(Number(r.dataset.rm), 1); saveCart(); renderCart(); return; }
+  const pay = e.target.closest('[data-pay]'); if (pay && pay.dataset.pay){ e.preventDefault(); toast('Este produto ainda não tem link de pagamento. Cadastre no Painel.'); }
+});
+$('#cart-clear').addEventListener('click', () => { cart = []; saveCart(); renderCart(); });
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(t){ const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 3600); }
+
+/* ---------- textos legais (modelos) ---------- */
+const PH = t => `<span class="ph">[PREENCHER: ${t}]</span>`;
+const LEGAL = {
+  privacidade: ['Política de privacidade', `<p>Tratamos seus dados conforme a LGPD. Controlador: ${PH('razão social e CNPJ')}.</p><ul><li>Dados coletados: nome, contato e dados do pedido, para vender e entregar.</li><li>Cookies essenciais mantêm o carrinho. Estatística e marketing só entram com a sua permissão.</li><li>Compartilhamos dados apenas com o gateway de pagamento e com quem for necessário para a entrega.</li><li>Pedidos de acesso, correção ou exclusão: ${PH('e-mail do encarregado')}.</li></ul><p>Texto-modelo: revise com um advogado antes de publicar.</p>`],
+  termos: ['Termos de compra', `<ul><li>O pedido é confirmado após a aprovação do pagamento no gateway.</li><li>A entrega segue o prazo e o formato descritos em cada produto.</li><li>Informe aqui regras de uso, licença e suporte do seu produto.</li></ul><p>Texto-modelo: revise com um advogado antes de publicar.</p>`],
+  reembolso: ['Reembolso', `<ul><li>Arrependimento em até 7 dias corridos após a compra, conforme o Código de Defesa do Consumidor.</li><li>Como pedir: ${PH('e-mail ou WhatsApp')}.</li><li>Descreva aqui exceções, como produtos já acessados ou serviços já iniciados, de acordo com a lei.</li></ul><p>Texto-modelo: ajuste às regras reais da loja e revise com um advogado.</p>`]
+};
+function openModal(t, h){ lastFocus = document.activeElement; $('#modal-title').textContent = t; $('#modal-body').innerHTML = h; $('#modal').hidden = false; lock(true); $('#modal-close').focus(); }
+function closeModal(){ if ($('#modal').hidden) return; $('#modal').hidden = true; lock(!$('#cart').hidden || !$('#sheet').hidden); lastFocus && lastFocus.focus && lastFocus.focus(); }
+document.addEventListener('click', e => { const b = e.target.closest('[data-legal]'); if (b && LEGAL[b.dataset.legal]) openModal(...LEGAL[b.dataset.legal]); });
+$('#modal-close').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+/* ---------- cookies (LGPD) ---------- */
+function setCookieH(){ const c = $('#cookie'); document.documentElement.style.setProperty('--cookie-h', c.hidden ? '0px' : c.offsetHeight + 'px'); }
+function saveConsent(s, m){ store.set('cy-consent', { necessary:true, stat:!!s, marketing:!!m, at:Date.now() }); $('#cookie').hidden = true; setCookieH(); }
+$('#ck-all').addEventListener('click', () => saveConsent(true, true));
+$('#ck-ess').addEventListener('click', () => saveConsent(false, false));
+$('#ck-cfg').addEventListener('click', () => { const p = $('#ck-prefs'); p.hidden = !p.hidden; $('#ck-cfg').setAttribute('aria-expanded', String(!p.hidden)); setCookieH(); });
+$('#ck-save').addEventListener('click', () => saveConsent($('#ck-stat').checked, $('#ck-mkt').checked));
+$('#cookie-reopen').addEventListener('click', () => { $('#cookie').hidden = false; $('#ck-prefs').hidden = false; $('#ck-cfg').setAttribute('aria-expanded','true'); const c = store.get('cy-consent', {}); $('#ck-stat').checked = !!c.stat; $('#ck-mkt').checked = !!c.marketing; setCookieH(); });
+if (!store.get('cy-consent', null)) $('#cookie').hidden = false;
+setCookieH(); addEventListener('resize', setCookieH);
+
+/* =========================== PAINEL DO LOJISTA =========================== */
+let admin = null, adTab = 'produtos', work = null, workIdx = -1, confirmKey = '';
+let adminUnlocked = false, loginFails = 0, revealTimer = null;
+const parseNum = v => { let s = String(v).trim(); if (s.includes(',')) s = s.replace(/\./g,'').replace(',','.'); const n = parseFloat(s); return isFinite(n) && n >= 0 ? n : 0; };
+const numStr = n => (n ? String(n).replace('.', ',') : '');
+function persist(){
+  const ok = store.set('cy-draft', DATA);
+  if (!ok) toast('Não deu para guardar o rascunho neste navegador (espaço cheio). Baixe a loja agora ou use fotos menores.');
+  const st = $('#ad-status', admin || document); if (st && admin) st.textContent = ok ? 'Alterações guardadas só neste navegador. Baixe a loja para publicar.' : 'Rascunho NÃO guardado. Baixe a loja agora.';
+  return ok;
+}
+function imgToData(file, maxW, type){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onerror = () => rej(new Error('read'));
+    fr.onload = () => {
+      const im = new Image();
+      im.onerror = () => rej(new Error('img'));
+      im.onload = () => {
+        const k = Math.min(1, maxW / im.width), w = Math.max(1, Math.round(im.width*k)), h = Math.max(1, Math.round(im.height*k));
+        const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(im, 0, 0, w, h);
+        let out = c.toDataURL(type, .85);
+        if (type === 'image/webp' && !out.startsWith('data:image/webp')) out = c.toDataURL('image/jpeg', .85);
+        res(out);
+      };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+async function pickImage(file, maxW, type){
+  if (!file) return null;
+  if (!/^image\//.test(file.type)){ toast('Escolha um arquivo de imagem (JPG, PNG ou WebP).'); return null; }
+  try { return await imgToData(file, maxW, type); } catch(e){ toast('Não consegui ler essa imagem. Tente outro arquivo.'); return null; }
+}
+function openAdmin(){
+  if (admin) return;
+  closeCart(); closeSheet(true); closeModal(); lastFocus = document.activeElement;
+  admin = document.createElement('div'); admin.className = 'adm';
+  admin.setAttribute('role','dialog'); admin.setAttribute('aria-modal','true'); admin.setAttribute('aria-label','Painel do lojista');
+  document.body.appendChild(admin); lock(true);
+  if (CONFIG.adminHash && !adminUnlocked) renderLogin(); else renderAdmin();
+}
+function renderLogin(){
+  admin.innerHTML = `<div class="wrap adm-login"><form class="card-panel" id="login-form" novalidate>
+    <h2 style="font-size:1.6rem">Painel do lojista</h2>
+    <p class="note">Digite a senha para editar produtos, fotos e valores.</p>
+    <div class="fld"><label for="pw">Senha</label><input id="pw" type="password" autocomplete="current-password"></div>
+    <p class="msg" id="login-msg" aria-live="polite"></p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn btn-main" type="submit">Entrar</button><button class="btn btn-ghost" type="button" data-ad="close">Voltar à loja</button></div>
+    ${CONFIG.recovery ? '<p style="margin-top:.8rem"><button class="linkbtn" type="button" data-ad="forgot">Esqueci a senha</button></p>' : ''}
+  </form></div>`;
+  $('#pw', admin).focus();
+}
+async function tryLogin(){
+  const pw = $('#pw', admin).value, msg = $('#login-msg', admin);
+  if (!pw){ msg.textContent = 'Digite a senha.'; return; }
+  let h = '';
+  try { h = await derive(pw, CONFIG.adminSalt); } catch(e){ msg.textContent = 'Este navegador não consegue verificar a senha.'; return; }
+  if (h === CONFIG.adminHash){ adminUnlocked = true; loginFails = 0; renderAdmin(); return; }
+  loginFails++; msg.textContent = 'Senha incorreta.';
+  $('#pw', admin).value = '';
+  await new Promise(r => setTimeout(r, Math.min(4000, 500 * loginFails)));
+  if (admin && $('#pw', admin)) $('#pw', admin).focus();
+}
+document.addEventListener('submit', e => {
+  if (!admin) return;
+  if (e.target.id === 'login-form'){ e.preventDefault(); tryLogin(); }
+  else if (e.target.id === 'rec-form'){ e.preventDefault(); tryRecover(); }
+});
+function renderRecover(msg){
+  admin.innerHTML = `<div class="wrap adm-login"><form class="card-panel" id="rec-form" novalidate>
+    <h2 style="font-size:1.6rem">Recuperar senha</h2>
+    <p class="note">Digite o código de recuperação para ver a senha por 30 segundos.</p>
+    <div class="fld"><label for="rec-code">Código de recuperação</label><input id="rec-code" type="password" autocomplete="off"></div>
+    <p class="msg" id="rec-msg" aria-live="polite">${esc(msg || '')}</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn btn-main" type="submit">Ver senha</button><button class="btn btn-ghost" type="button" data-ad="back">Voltar</button></div>
+  </form></div>`;
+  $('#rec-code', admin).focus();
+}
+async function tryRecover(){
+  const code = $('#rec-code', admin).value, msg = $('#rec-msg', admin);
+  if (!code.trim()){ msg.textContent = 'Digite o código.'; return; }
+  let pw = null;
+  try { pw = await decryptPw(code); } catch(e){ pw = null; }
+  if (pw === null){
+    loginFails++; $('#rec-code', admin).value = ''; msg.textContent = 'Código incorreto.';
+    await new Promise(r => setTimeout(r, Math.min(4000, 500 * loginFails)));
+    return;
+  }
+  loginFails = 0; showReveal(pw);
+}
+function showReveal(pw){
+  clearInterval(revealTimer);
+  admin.innerHTML = `<div class="wrap adm-login"><div class="card-panel" aria-live="polite">
+    <h2 style="font-size:1.4rem">Senha do painel</h2>
+    <p class="note">Anote agora. Esta tela fecha sozinha em <b id="rv-s">30</b> segundos.</p>
+    <code class="reveal" id="rv-pw"></code>
+    <div><button class="btn btn-ghost" type="button" data-ad="back">Fechar agora</button></div></div></div>`;
+  $('#rv-pw', admin).textContent = pw;
+  let s = 30;
+  revealTimer = setInterval(() => {
+    s--;
+    if (!admin || s <= 0){ clearInterval(revealTimer); revealTimer = null; if (admin) renderLogin(); return; }
+    $('#rv-s', admin).textContent = s;
+  }, 1000);
+}
+function closeAdmin(){
+  if (!admin) return; admin.remove(); admin = null; work = null; confirmKey = ''; adminUnlocked = false; clearInterval(revealTimer); revealTimer = null; lock(false);
+  try { if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+  applyAll(); lastFocus && lastFocus.focus && lastFocus.focus();
+}
+function renderAdmin(){
+  const tabs = [['produtos','Produtos'],['categorias','Categorias'],['loja','Loja'],['publicar','Publicar']];
+  const pending = !!store.get('cy-draft', null);
+  admin.innerHTML = `<div class="adm-top"><div class="wrap adm-bar">
+      <div><b style="font-size:1.2rem">Painel ${esc(CONFIG.brand)}</b><div class="note" id="ad-status">${pending ? 'Alterações guardadas só neste navegador. Baixe a loja para publicar.' : 'Sem alterações pendentes.'}</div></div>
+      <div class="tabs" role="tablist">${tabs.map(([k,l]) => `<button class="tab" type="button" role="tab" data-tab="${k}" aria-selected="${k===adTab}">${l}</button>`).join('')}</div>
+      <button class="btn btn-ghost btn-sm" type="button" data-ad="close">Ver loja</button>
+    </div></div><div class="wrap adm-body" id="ad-body"></div>`;
+  renderTab();
+}
+function renderTab(){
+  admin.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === adTab)));
+  const b = $('#ad-body', admin);
+  b.innerHTML = ({ produtos:tabProdutos, categorias:tabCategorias, loja:tabLoja, publicar:tabPublicar })[adTab]();
+}
+function tabProdutos(){
+  if (work) return productForm();
+  const head = `<div class="adm-h"><h2>Produtos (${PRODUCTS.length})</h2><button class="btn btn-main btn-sm" type="button" data-ad="new">Novo produto</button></div>`;
+  if (!PRODUCTS.length) return head + '<p class="empty">Nenhum produto ainda. Clique em Novo produto.</p>';
+  return head + PRODUCTS.map((p,i) => { const v = minVar(p), ck = 'del' + i; return `
+    <div class="row">
+      <div class="thumb">${art(p)}</div>
+      <div style="min-width:0"><b>${esc(p.name)}</b><div class="note">${esc(p.cat)} · ${p.variations.length} ${p.variations.length === 1 ? 'opção' : 'opções'} · a partir de ${money(v.price)}</div></div>
+      <div class="acts">
+        <button class="btn btn-ghost btn-sm" type="button" data-ad="edit" data-i="${i}">Editar</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-ad="dup" data-i="${i}">Duplicar</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-ad="up" data-i="${i}" aria-label="Mover para cima" ${i===0?'disabled':''}>&uarr;</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-ad="down" data-i="${i}" aria-label="Mover para baixo" ${i===PRODUCTS.length-1?'disabled':''}>&darr;</button>
+        <button class="btn btn-sm ${confirmKey===ck?'btn-danger':'btn-ghost'}" type="button" data-ad="del" data-i="${i}">${confirmKey===ck?'Confirmar exclusão':'Excluir'}</button>
+      </div>
+    </div>`; }).join('');
+}
+function productForm(){
+  const w = work;
+  const imgUrl = w.image && !w.image.startsWith('data:') ? w.image : '';
+  return `<div class="adm-h"><h2>${workIdx < 0 ? 'Novo produto' : 'Editar produto'}</h2></div>
+  <div class="card-panel">
+    <div class="cols">
+      <div class="fld"><label for="f-name">Nome do produto</label><input id="f-name" data-f="name" value="${esc(w.name)}" maxlength="80"></div>
+      <div class="fld"><label for="f-cat">Categoria</label><select id="f-cat" data-f="cat">${CATEGORIES.map(c => `<option ${c===w.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+      <div class="fld"><label for="f-color">Cor do card</label><input id="f-color" type="color" data-f="color" value="${esc(safeColor(w.color))}" style="padding:.2rem"></div>
+    </div>
+    <div class="fld"><label>Foto do produto</label>
+      <div class="imgbox"><div class="prev" id="f-prev">${art(w)}</div>
+        <div style="display:grid;gap:.5rem;flex:1;min-width:220px">
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap"><label class="btn btn-lilac btn-sm" for="f-file">Enviar foto</label><input id="f-file" class="sr" type="file" accept="image/*"><button class="btn btn-ghost btn-sm" type="button" data-ad="rmimg">Remover foto</button></div>
+          <div class="fld"><label for="f-img" class="note">Ou cole o endereço de uma imagem já hospedada</label><input id="f-img" data-f="image" placeholder="https://..." value="${esc(imgUrl)}"></div>
+          <small class="note">A foto enviada é reduzida automaticamente para carregar rápido. Proporção ideal: 16 por 10.</small>
+        </div></div></div>
+    <div class="fld"><label for="f-desc">Descrição</label><textarea id="f-desc" data-f="desc" maxlength="400">${esc(w.desc)}</textarea></div>
+    <div class="fld"><label for="f-tags">Selos (separe por vírgula)</label><input id="f-tags" data-f="tagsText" value="${esc(w.tagsText || '')}" placeholder="Entrega automática, Acesso imediato"></div>
+    <div class="fld"><label>Opções e valores</label><small class="note">Valor: o preço de venda. Valor antigo: o preço riscado (deixe vazio se não houver). Link do gateway: o endereço de pagamento desta opção.</small></div>
+    ${w.variations.map((v,i) => `
+    <div class="vrow">
+      <div class="fld"><label for="v${i}n">Nome da opção</label><input id="v${i}n" data-v="${i}:name" value="${esc(v.name)}" maxlength="60"></div>
+      <div class="fld"><label for="v${i}d">Detalhe</label><input id="v${i}d" data-v="${i}:note" value="${esc(v.note || '')}" maxlength="80"></div>
+      <div class="fld"><label for="v${i}p">Valor (R$)</label><input id="v${i}p" data-v="${i}:price" inputmode="decimal" value="${numStr(v.price)}" placeholder="29,90"></div>
+      <div class="fld"><label for="v${i}o">Valor antigo</label><input id="v${i}o" data-v="${i}:old" inputmode="decimal" value="${numStr(v.old)}" placeholder="49,90"></div>
+      <div class="fld wide"><label for="v${i}c">Link do gateway</label><input id="v${i}c" data-v="${i}:checkout" value="${esc(v.checkout || '')}" placeholder="https://..."></div>
+      <button class="btn btn-ghost btn-sm" type="button" data-ad="rmvar" data-i="${i}" aria-label="Remover opção ${i+1}">Remover</button>
+    </div>`).join('')}
+    <div><button class="btn btn-ghost btn-sm" type="button" data-ad="addvar">Adicionar opção</button></div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn btn-main" type="button" data-ad="save">Salvar produto</button><button class="btn btn-ghost" type="button" data-ad="cancel">Cancelar</button></div>
+  </div>`;
+}
+function tabCategorias(){
+  return `<div class="adm-h"><h2>Categorias</h2></div><div class="card-panel">
+    <div class="fld"><label for="c-text">Uma categoria por linha</label><textarea id="c-text" style="min-height:160px">${esc(CATEGORIES.join('\n'))}</textarea><small class="note">Produtos de uma categoria removida passam para a primeira da lista.</small></div>
+    <div><button class="btn btn-main btn-sm" type="button" data-ad="savecats">Salvar categorias</button></div></div>`;
+}
+function tabLoja(){
+  const c = CONFIG;
+  return `<div class="adm-h"><h2>Dados da loja</h2></div><div class="card-panel">
+    <div class="cols">
+      <div class="fld"><label for="s-brand">Nome da plataforma</label><input id="s-brand" value="${esc(c.brand)}" maxlength="40"></div>
+      <div class="fld"><label for="s-tag">Frase curta abaixo do nome</label><input id="s-tag" value="${esc(c.tagline)}" maxlength="60"></div>
+    </div>
+    <div class="fld"><label>Logo</label><div class="imgbox"><div class="prev" id="s-prev" style="aspect-ratio:1;width:96px;display:grid;place-items:center">${c.logo ? `<img src="${esc(c.logo)}" alt="">` : `<span class="mono">${esc(monogram())}</span>`}</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap"><label class="btn btn-lilac btn-sm" for="s-logo">Enviar logo</label><input id="s-logo" class="sr" type="file" accept="image/*"><button class="btn btn-ghost btn-sm" type="button" data-ad="rmlogo">Usar monograma</button></div></div></div>
+    <div class="cols">
+      <div class="fld"><label for="s-ht">Título da página inicial</label><input id="s-ht" value="${esc(c.heroTitle)}" maxlength="90"></div>
+      <div class="fld"><label for="s-hh">Trecho do título em destaque</label><input id="s-hh" value="${esc(c.heroHighlight)}" maxlength="60"></div>
+    </div>
+    <div class="fld"><label for="s-hs">Texto de apoio</label><textarea id="s-hs" maxlength="240">${esc(c.heroSub)}</textarea></div>
+    <div class="cols">
+      <div class="fld"><label for="s-sup">Link do suporte</label><input id="s-sup" value="${esc(c.supportUrl)}" placeholder="https://wa.me/5585999999999"></div>
+      <div class="fld"><label for="s-cart">Link único do carrinho (opcional)</label><input id="s-cart" value="${esc(c.cartCheckoutUrl)}" placeholder="https://..."><small class="note">Use se o seu gateway aceita um pedido com vários itens.</small></div>
+    </div>
+    <label class="chk"><input id="s-tpl" type="checkbox" ${c.templateMode ? 'checked' : ''}> Mostrar a faixa "Modelo" no topo (desmarque ao publicar)</label>
+    <label class="chk"><input id="s-adm" type="checkbox" ${c.showAdminLink ? 'checked' : ''}> Mostrar o link "Painel do lojista" no rodapé (o painel continua em #admin)</label>
+    <div><button class="btn btn-main btn-sm" type="button" data-ad="savestore">Salvar dados da loja</button></div></div>
+  <div class="card-panel"><b>Senha do painel</b>
+    <p class="note">${CONFIG.adminHash ? 'Protege o painel. Sem a senha, ninguém consegue editar produtos, fotos ou valores.' : 'Ainda sem senha. Defina uma antes de publicar.'}</p>
+    <div class="cols">
+      <div class="fld"><label for="pw-new">Nova senha (mínimo 8 caracteres)</label><input id="pw-new" type="password" autocomplete="new-password"></div>
+      <div class="fld"><label for="pw-new2">Repita a nova senha</label><input id="pw-new2" type="password" autocomplete="new-password"></div>
+      <div class="fld"><label for="pw-rec">Código de recuperação (mínimo 8 caracteres)</label><input id="pw-rec" type="password" autocomplete="off"></div>
+    </div>
+    <div><button class="btn btn-main btn-sm" type="button" data-ad="setpw">${CONFIG.adminHash ? 'Trocar senha' : 'Definir senha'}</button></div></div>`;
+}
+function tabPublicar(){
+  const kb = Math.round(JSON.stringify(DATA).length / 1024);
+  return `<div class="adm-h"><h2>Publicar</h2></div>${CONFIG.adminHash ? '' : '<div class="card-panel"><b>Antes de publicar</b><p class="note">Defina uma senha na aba Loja. Sem ela, qualquer pessoa que abrir #admin pode mexer no painel.</p></div>'}
+  <div class="card-panel"><b>1. Baixe a loja atualizada</b>
+    <p class="note">Gera um único arquivo HTML com tudo o que você cadastrou (${kb > 1024 ? (kb/1024).toFixed(1) + ' MB' : kb + ' KB'} de dados). Hospede esse arquivo no lugar do anterior e a loja nova aparece para os clientes.</p>
+    <div><button class="btn btn-main btn-sm" type="button" data-ad="download">Baixar loja atualizada</button></div></div>
+  <div class="card-panel"><b>Backup e transferência</b>
+    <p class="note">Copie os dados para guardar ou levar a outro aparelho. Para restaurar, cole no campo e use Importar.</p>
+    <div class="fld"><label for="pub-json">Dados da loja (JSON)</label><textarea id="pub-json" class="code" spellcheck="false" placeholder="Os dados aparecem aqui ao copiar. Cole aqui para importar."></textarea></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" type="button" data-ad="copy">Copiar dados</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-ad="import">Importar dados</button>
+      <label class="btn btn-ghost btn-sm" for="imp-file">Abrir arquivo .json</label><input id="imp-file" class="sr" type="file" accept="application/json,.json">
+      <button class="btn btn-sm ${confirmKey==='discard'?'btn-danger':'btn-ghost'}" type="button" data-ad="discard">${confirmKey==='discard' ? 'Confirmar: descartar alterações' : 'Descartar alterações'}</button>
+    </div></div>`;
+}
+function saveProduct(){
+  const w = work, name = (w.name || '').trim();
+  if (!name) return toast('Informe o nome do produto.');
+  if (w.variations.some(v => !(v.name || '').trim())) return toast('Dê um nome a cada opção.');
+  if (w.variations.some(v => v.checkout && !safeUrl(v.checkout))) return toast('O link do gateway precisa começar com https://');
+  if (w.image && !/^(data:image\/|https?:\/\/)/.test(w.image)) return toast('O endereço da imagem precisa começar com https://');
+  const out = { id:w.id, name, cat:w.cat || CATEGORIES[0], color:safeColor(w.color), image:w.image || '', desc:(w.desc || '').trim(),
+    tags:(w.tagsText || '').split(',').map(s => s.trim()).filter(Boolean),
+    variations:w.variations.map(v => ({ name:v.name.trim(), note:(v.note || '').trim(), price:v.price || 0, old:v.old || 0, checkout:safeUrl(v.checkout) })) };
+  if (workIdx < 0) PRODUCTS.push(out); else PRODUCTS[workIdx] = out;
+  persist(); work = null; renderTab(); toast('Produto salvo.');
+}
+function buildHtml(){
+  const json = JSON.stringify(DATA).replace(/</g, '\\u003c');
+  return ORIGINAL_HTML.replace(/(<script type="application\/json" id="store-data">)[\s\S]*?(<\/script>)/, (m, a, b) => a + json + b);
+}
+async function adClick(b){
+  if (b.dataset.tab){ adTab = b.dataset.tab; work = null; confirmKey = ''; renderTab(); return; }
+  const a = b.dataset.ad, i = Number(b.dataset.i);
+  switch (a){
+    case 'close': closeAdmin(); return;
+    case 'new': work = { id:'p' + Date.now().toString(36), name:'', cat:CATEGORIES[0] || '', color:'#8B2BE2', image:'', desc:'', tagsText:'', variations:[{ name:'', note:'', price:0, old:0, checkout:'' }] }; workIdx = -1; break;
+    case 'edit': work = clone(PRODUCTS[i]); work.tagsText = work.tags.join(', '); workIdx = i; break;
+    case 'dup': { const c = clone(PRODUCTS[i]); c.id = 'p' + Date.now().toString(36); c.name += ' (cópia)'; PRODUCTS.splice(i + 1, 0, c); persist(); break; }
+    case 'up': if (i > 0){ [PRODUCTS[i-1], PRODUCTS[i]] = [PRODUCTS[i], PRODUCTS[i-1]]; persist(); } break;
+    case 'down': if (i < PRODUCTS.length - 1){ [PRODUCTS[i+1], PRODUCTS[i]] = [PRODUCTS[i], PRODUCTS[i+1]]; persist(); } break;
+    case 'del': if (confirmKey === 'del' + i){ PRODUCTS.splice(i, 1); confirmKey = ''; persist(); toast('Produto excluído.'); } else confirmKey = 'del' + i; break;
+    case 'addvar': work.variations.push({ name:'', note:'', price:0, old:0, checkout:'' }); break;
+    case 'rmvar': if (work.variations.length > 1) work.variations.splice(i, 1); else toast('O produto precisa de pelo menos uma opção.'); break;
+    case 'rmimg': work.image = ''; break;
+    case 'save': saveProduct(); return;
+    case 'cancel': work = null; break;
+    case 'savecats': {
+      const list = [...new Set($('#c-text', admin).value.split('\n').map(s => s.trim()).filter(s => s && s !== 'Todos'))];
+      if (!list.length) return toast('Mantenha pelo menos uma categoria.');
+      let moved = 0; PRODUCTS.forEach(p => { if (!list.includes(p.cat)){ p.cat = list[0]; moved++; } });
+      DATA.categories = list; sync(); persist(); cat = 'Todos'; toast(moved ? `Categorias salvas. ${moved} produto(s) foram para "${list[0]}".` : 'Categorias salvas.'); break;
+    }
+    case 'savestore': {
+      const sup = $('#s-sup', admin).value.trim(), cart2 = $('#s-cart', admin).value.trim();
+      if ((sup && !safeUrl(sup)) || (cart2 && !safeUrl(cart2))) return toast('Os links precisam começar com https://');
+      const brand = $('#s-brand', admin).value.trim(); if (!brand) return toast('Informe o nome da plataforma.');
+      Object.assign(CONFIG, { brand, tagline:$('#s-tag', admin).value.trim(), heroTitle:$('#s-ht', admin).value.trim(), heroHighlight:$('#s-hh', admin).value.trim(), heroSub:$('#s-hs', admin).value.trim(), supportUrl:sup, cartCheckoutUrl:cart2, templateMode:$('#s-tpl', admin).checked, showAdminLink:$('#s-adm', admin).checked });
+      persist(); applyBrand(); renderCart(); toast('Dados da loja salvos.'); break;
+    }
+    case 'setpw': {
+      const a = $('#pw-new', admin).value, c2 = $('#pw-new2', admin).value, rc = $('#pw-rec', admin).value.trim();
+      if (a.length < 8) return toast('Use pelo menos 8 caracteres.');
+      if (a !== c2) return toast('As senhas não coincidem.');
+      if (rc.length < 8) return toast('O código de recuperação precisa ter pelo menos 8 caracteres.');
+      if (rc === a) return toast('O código de recuperação não pode ser igual à senha.');
+      try { const salt = toHex(crypto.getRandomValues(new Uint8Array(16))); CONFIG.adminHash = await derive(a, salt); CONFIG.adminSalt = salt; CONFIG.recovery = await encryptPw(a, rc); }
+      catch(e){ return toast('Este navegador não consegue salvar a senha.'); }
+      persist(); toast('Senha salva. Ela vai junto no arquivo baixado.'); break;
+    }
+    case 'forgot': renderRecover(); return;
+    case 'back': clearInterval(revealTimer); revealTimer = null; renderLogin(); return;
+    case 'rmlogo': CONFIG.logo = ''; persist(); applyBrand(); break;
+    case 'download': {
+      try {
+        const blob = new Blob([buildHtml()], { type:'text/html' }), el = document.createElement('a');
+        el.href = URL.createObjectURL(blob); el.download = 'loja-' + norm(CONFIG.brand).replace(/ /g, '-') + '.html'; document.body.appendChild(el); el.click(); el.remove();
+        setTimeout(() => URL.revokeObjectURL(el.href), 4000);
+        toast('Baixando a loja atualizada. Se nada acontecer, abra esta página no navegador (não na pré-visualização) ou use Copiar dados.');
+      } catch(e){ toast('Não consegui gerar o arquivo. Use Copiar dados para guardar o conteúdo.'); }
+      return;
+    }
+    case 'copy': {
+      const ta = $('#pub-json', admin); ta.value = JSON.stringify(DATA); ta.select();
+      const done = () => toast('Dados copiados.'), fail = () => toast('Texto selecionado no campo. Use copiar do seu aparelho.');
+      try { navigator.clipboard.writeText(ta.value).then(done, fail); } catch(e){ fail(); }
+      return;
+    }
+    case 'import': {
+      let d = null; try { d = normalize(JSON.parse($('#pub-json', admin).value)); } catch(e){}
+      if (!d || !d.products.length) return toast('Dados inválidos. Cole o JSON copiado do painel.');
+      DATA = d; sync(); persist(); cat = 'Todos'; toast(`${d.products.length} produto(s) importados.`); break;
+    }
+    case 'discard': if (confirmKey === 'discard'){ store.del('cy-draft'); DATA = clone(DEFAULT); sync(); cat = 'Todos'; confirmKey = ''; renderAdmin(); toast('Alterações descartadas.'); return; } confirmKey = 'discard'; break;
+  }
+  renderTab();
+}
+function adInput(t){
+  if (t.dataset.f && work){ work[t.dataset.f] = t.value; if (t.dataset.f === 'image' || t.dataset.f === 'color') $('#f-prev', admin).innerHTML = art(work); }
+  else if (t.dataset.v && work){ const [i, k] = t.dataset.v.split(':'), v = work.variations[Number(i)]; if (v) v[k] = (k === 'price' || k === 'old') ? parseNum(t.value) : t.value; }
+}
+async function adChange(t){
+  if (t.id === 'f-file' && work){ const d = await pickImage(t.files[0], 900, 'image/webp'); if (d){ work.image = d; renderTab(); toast('Foto adicionada.'); } t.value = ''; }
+  else if (t.id === 's-logo'){ const d = await pickImage(t.files[0], 256, 'image/png'); if (d){ CONFIG.logo = d; persist(); applyBrand(); renderTab(); toast('Logo atualizada.'); } t.value = ''; }
+  else if (t.id === 'imp-file' && t.files[0]){ const r = new FileReader(); r.onload = () => { $('#pub-json', admin).value = r.result; toast('Arquivo lido. Clique em Importar dados.'); }; r.readAsText(t.files[0]); t.value = ''; }
+}
+document.addEventListener('input', e => { if (admin && admin.contains(e.target)) adInput(e.target); });
+document.addEventListener('change', e => { if (admin && admin.contains(e.target)) adChange(e.target); });
+document.addEventListener('click', e => { if (!admin || !admin.contains(e.target)) return; const b = e.target.closest('[data-ad],[data-tab]'); if (b) adClick(b); });
+addEventListener('hashchange', () => { if (location.hash === '#admin') openAdmin(); });
+
+/* ---------- teclado ---------- */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (admin) closeAdmin(); else if (!$('#modal').hidden) closeModal(); else if (!$('#sheet').hidden) closeSheet(); else if (!$('#cart').hidden) closeCart();
+});
+
+/* ---------- comando de voz (Web Speech API, só no navegador) ---------- */
+(function(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, btn = $('#mic');
+  if (!SR) return;
+  btn.hidden = false;
+  const rec = new SR(); rec.lang = 'pt-BR'; rec.interimResults = false; rec.maxAlternatives = 3; rec.continuous = false;
+  let on = false;
+  const has = (t, w) => w.some(x => t.includes(x));
+  const go = id => { closeCart(); closeSheet(); const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior:'smooth', block:'start' }); };
+  function run(raw){
+    const t = norm(raw);
+    if (has(t, ['fechar','fecha','cancelar'])){ closeCart(); closeSheet(); closeModal(); return 'fechar'; }
+    if (has(t, ['carrinho','sacola'])){ openCart(); return 'abrir carrinho'; }
+    if (has(t, ['suporte','atendente','ajuda','falar com'])){ $('#support').click(); return 'suporte'; }
+    if (has(t, ['duvida','pergunta','faq','como funciona','como comprar'])){ go('duvidas'); return 'ver dúvidas'; }
+    if (has(t, ['topo','inicio'])){ scrollTo({ top:0, behavior:'smooth' }); return 'voltar ao topo'; }
+    const c = CATEGORIES.find(x => t.includes(norm(x)));
+    if (c){ cat = c; renderChips(); renderGrid(); go('catalogo'); return 'categoria ' + c; }
+    if (has(t, ['todos','tudo','catalogo','produtos'])){ cat = 'Todos'; query = ''; $('#q').value = ''; renderChips(); renderGrid(); go('catalogo'); return 'ver catálogo'; }
+    const m = t.match(/^(?:buscar|procurar|pesquisar|quero)\s+(.+)$/);
+    if (m){ query = m[1]; $('#q').value = m[1]; cat = 'Todos'; renderChips(); renderGrid(); go('catalogo'); return 'buscar ' + m[1]; }
+    const p = PRODUCTS.find(x => t.includes(norm(x.name)));
+    if (p){ openSheet(p.id); return 'abrir ' + p.name; }
+    return null;
+  }
+  const stop = () => { on = false; btn.setAttribute('aria-pressed','false'); };
+  btn.addEventListener('click', () => {
+    if (on){ try { rec.stop(); } catch(e){} stop(); return; }
+    try { rec.start(); on = true; btn.setAttribute('aria-pressed','true'); toast('Ouvindo. Diga, por exemplo, "carrinho", "ver cursos" ou "buscar planilha".'); } catch(e){ stop(); }
+  });
+  rec.onresult = ev => {
+    let done = null;
+    for (const alt of Array.from(ev.results[0])) { done = run(alt.transcript); if (done) break; }
+    toast(done ? `Entendi: ${done}` : 'Não entendi. Tente: carrinho, dúvidas, ver [categoria], buscar [produto] ou o nome de um produto.');
+  };
+  rec.onend = stop;
+  rec.onerror = ev => {
+    stop();
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){ btn.hidden = true; toast('O microfone está bloqueado neste navegador. A loja segue funcionando sem voz.'); }
+    else if (ev.error === 'no-speech'){ toast('Não ouvi nada. Toque no microfone e fale de novo.'); }
+  };
+})();
+
+/* ---------- início ---------- */
+function applyAll(){ if (!CATEGORIES.includes(cat) && cat !== 'Todos') cat = 'Todos'; applyBrand(); renderChips(); renderGrid(); renderCart(); }
+applyAll();
+if (location.hash === '#admin') openAdmin();
+
+/* ---------- Movimento-Assinatura: Scan & Unlock ---------- */
+(function initSignature(){
+  const cena = document.getElementById('como-funciona');
+  if (!cena) return;
+  const laser = document.getElementById('sig-laser');
+  const badge = document.getElementById('sig-status-badge');
+  const statusTxt = document.getElementById('sig-status-txt');
+  const keyVal = document.getElementById('sig-key-val');
+  const fs = document.getElementById('final-support');
+  const items = [
+    document.getElementById('tl-step-1'),
+    document.getElementById('tl-step-2'),
+    document.getElementById('tl-step-3'),
+    document.getElementById('tl-step-4')
+  ].filter(Boolean);
+
+  if (fs) {
+    fs.addEventListener('click', e => {
+      e.preventDefault();
+      $('#support').click();
+    });
+  }
+
+  function syncSig(){
+    const prog = parseFloat(getComputedStyle(cena).getPropertyValue('--progresso') || '0');
+    if (laser) {
+      laser.style.transform = `translateY(${Math.round(prog * 140)}px)`;
+    }
+    items.forEach((item, idx) => {
+      const threshold = idx * 0.28;
+      if (prog >= threshold) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+    if (prog >= 0.45) {
+      if (badge && !badge.classList.contains('confirmed')) {
+        badge.classList.add('confirmed');
+        if (statusTxt) statusTxt.textContent = 'PAGAMENTO CONFIRMADO · 0.2s';
+        if (keyVal) {
+          keyVal.textContent = 'CT-9428-ULTRA-ACCESS-2026';
+          keyVal.style.color = '#3DD68C';
+        }
+      }
+    } else {
+      if (badge && badge.classList.contains('confirmed')) {
+        badge.classList.remove('confirmed');
+        if (statusTxt) statusTxt.textContent = 'AGUARDANDO TRANSAÇÃO PIX...';
+        if (keyVal) {
+          keyVal.textContent = 'CHAVE: •••••-•••••-•••••';
+          keyVal.style.color = 'var(--lilac)';
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', syncSig, { passive: true });
+  window.addEventListener('resize', syncSig);
+  syncSig();
+})();
+</script>
+
+<script src="sites-incriveis.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "playwright-core": "^1.64.1"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "verificar": "node verificar-site.mjs --url http://localhost:4600 --saida verificacao-redesign",
+    "test": "node verificacao-redesign/testar.mjs"
+  }
+}
